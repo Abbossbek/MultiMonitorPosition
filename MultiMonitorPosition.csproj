@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="4.3.0-ci45" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="DPEdit.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

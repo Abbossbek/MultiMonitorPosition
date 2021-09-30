@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -20,22 +19,26 @@ namespace MultiMonitorPosition
     /// <summary>
     /// Логика взаимодействия для MoveThumb.xaml
     /// </summary>
-    public partial class ScreenView : Grid
+    public partial class ScreenView : UserControl
     {
         public ScreenView()
         {
             InitializeComponent();
             
             thumb.DragDelta += new DragDeltaEventHandler(this.MoveThumb_DragDelta);
+
         }
 
         private void MoveThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             var screen = (ScreenModel)DataContext;
-            screen.X += (int)e.HorizontalChange;
-            screen.Y += (int)e.VerticalChange;
-            Canvas.SetLeft(this, screen.X);
-            Canvas.SetTop(this, screen.Y);
+            if (!screen.IsPrimary)
+            {
+                screen.X += (int)e.HorizontalChange;
+                screen.Y += (int)e.VerticalChange;
+                Canvas.SetLeft(this, screen.X);
+                Canvas.SetTop(this, screen.Y);
+            }
         }
     }
 }

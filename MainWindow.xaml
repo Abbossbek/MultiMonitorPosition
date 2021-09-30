@@ -4,26 +4,110 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MultiMonitorPosition"
-        mc:Ignorable="d" WindowState="Maximized" WindowStyle="None" HorizontalAlignment="Stretch"  
+        mc:Ignorable="d"
+        WindowState="Maximized"
+        WindowStyle="None"
+        HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
-        Title="MainWindow" Height="auto" Width="auto">
+        Background="{DynamicResource MaterialDesignDarkBackground}"
+        Foreground="White"
+        Title="MainWindow"
+        Height="auto"
+        Width="auto">
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBox}"
+               BasedOn="{StaticResource MaterialDesignTextBox}">
+            <Setter Property="Margin"
+                    Value="5,0" />
+            <Setter Property="Height"
+                    Value="30" />
+            <Setter Property="FontSize"
+                    Value="24" />
+            <Setter Property="Padding"
+                    Value="0" />
+            <Setter Property="VerticalAlignment"
+                    Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type Button}"
+               BasedOn="{StaticResource MaterialDesignFlatDarkBgButton}">
+            <Setter Property="Margin"
+                    Value="5" />
+            <Setter Property="FontSize"
+                    Value="24" />
+            <Setter Property="Height"
+                    Value="50" />
+        </Style>
+    </Window.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="90"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-        <Button x:Name="btnApply" Content="Apply" Margin="5" FontSize="25" Padding="15,0" Height="60" Click="btnApply_Click"/>
-        <Button x:Name="btnClose" Content="Close" Margin="5" FontSize="25" Padding="15,0" Height="60" Click="btnClose_Click"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="200" />
+        </Grid.ColumnDefinitions>
+        <StackPanel x:Name="spMain"
+                    Grid.Column="1"
+                    Margin="10"
+                    VerticalAlignment="Center">
+            <TextBlock Text="PRIMARY DISPLAY" Foreground="Red" TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Visibility="{Binding IsPrimary, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       FontSize="24"
+                       HorizontalAlignment="Center"
+                       Margin="0,15" />
+            <TextBlock Text="{Binding Name}"
+                       FontSize="24"
+                       HorizontalAlignment="Center"
+                       Margin="0,15" />
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <TextBlock Text="X:"
+                           FontSize="24"
+                           VerticalAlignment="Center" />
+                <TextBox Text="{Binding X, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsPrimary, Converter={StaticResource InvertBooleanConverter}}"
+                         PreviewTextInput="TextBox_PreviewTextInput"
+                         Width="100" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,15"
+                        HorizontalAlignment="Center">
+
+                <TextBlock Text="Y:"
+                           FontSize="24"
+                           VerticalAlignment="Center" />
+                <TextBox Text="{Binding Y, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding IsPrimary, Converter={StaticResource InvertBooleanConverter}}"
+                         PreviewTextInput="TextBox_PreviewTextInput"
+                         Width="100" />
+            </StackPanel>
+            <Button x:Name="btnApply"
+                    Content="Apply"
+                    Click="btnApply_Click" />
+            <Button x:Name="btnClose"
+                    Content="Close"
+                    Background="Red"
+                    Click="btnClose_Click" />
         </StackPanel>
-        <Separator VerticalAlignment="Bottom"/>
-        <Canvas x:Name="mainCanvas" Grid.Row="1" 
-            RenderTransformOrigin="0.568,0.568">
-        <Canvas.RenderTransform>
-            <ScaleTransform ScaleX="0.12" ScaleY="0.12"/>
+        <Rectangle VerticalAlignment="Stretch"
+                   HorizontalAlignment="Left"
+                   Grid.Column="1"
+                   Fill="Gray"
+                   Width="3" />
+        <Canvas x:Name="mainCanvas"
+                Grid.Row="1"
+                RenderTransformOrigin="0.568,0.568">
+            <Canvas.RenderTransform>
+                <ScaleTransform ScaleX="0.12"
+                                ScaleY="0.12" />
             </Canvas.RenderTransform>
-    </Canvas>
-        <Separator x:Name="spHor" VerticalAlignment="Center" Grid.Row="1"/>
-        <Separator x:Name="spVer" HorizontalAlignment="Center" Grid.Row="1" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+        </Canvas>
+
+        <Rectangle VerticalAlignment="Stretch"
+                   HorizontalAlignment="Center"
+                   Fill="Gray"
+                   Width="1" />
+        <Rectangle VerticalAlignment="Center"
+                   HorizontalAlignment="Stretch"
+                   Fill="Gray"
+                   Height="1" />
     </Grid>
 </Window>

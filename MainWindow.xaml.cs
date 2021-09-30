@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace MultiMonitorPosition
 {
@@ -32,6 +33,7 @@ namespace MultiMonitorPosition
         {
             mainCanvas.Children.Clear();
             screens.Clear();
+            spMain.DataContext = new ScreenModel();
             foreach (var item in Forms.Screen.AllScreens)
             {
                 var screen = new ScreenModel()
@@ -40,10 +42,15 @@ namespace MultiMonitorPosition
                     Height = item.WorkingArea.Height,
                     Width = item.WorkingArea.Width,
                     X = item.WorkingArea.X,
-                    Y = item.WorkingArea.Y
+                    Y = item.WorkingArea.Y,
+                    IsPrimary = item.Primary
                 };
                 screens.Add(screen);
                 var screenView = new ScreenView() { DataContext = screens.Last() };
+                screenView.PreviewMouseLeftButtonDown += (s, e) =>
+                {
+                    spMain.DataContext = ((ScreenView)s).DataContext;
+                };
                 mainCanvas.Children.Add(screenView);
                 Canvas.SetLeft(screenView, screen.X);
                 Canvas.SetTop(screenView, screen.Y);
@@ -64,6 +71,12 @@ namespace MultiMonitorPosition
             }
             await Task.Delay(3000);
             Refresh();
+        }
+
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Regex regex = new Regex("[^0-9.-]");
+            e.Handled = regex.IsMatch(e.Text);
         }
     }
 }
