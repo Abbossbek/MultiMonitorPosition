@@ -1,0 +1,29 @@
+﻿<Window x:Class="MultiMonitorPosition.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MultiMonitorPosition"
+        mc:Ignorable="d" WindowState="Maximized" WindowStyle="None" HorizontalAlignment="Stretch"  
+        VerticalAlignment="Stretch"
+        Title="MainWindow" Height="auto" Width="auto">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+        <Button x:Name="btnApply" Content="Apply" Margin="5" FontSize="25" Padding="15,0" Height="60" Click="btnApply_Click"/>
+        <Button x:Name="btnClose" Content="Close" Margin="5" FontSize="25" Padding="15,0" Height="60" Click="btnClose_Click"/>
+        </StackPanel>
+        <Separator VerticalAlignment="Bottom"/>
+        <Canvas x:Name="mainCanvas" Grid.Row="1" 
+            RenderTransformOrigin="0.568,0.568">
+        <Canvas.RenderTransform>
+            <ScaleTransform ScaleX="0.12" ScaleY="0.12"/>
+            </Canvas.RenderTransform>
+    </Canvas>
+        <Separator x:Name="spHor" VerticalAlignment="Center" Grid.Row="1"/>
+        <Separator x:Name="spVer" HorizontalAlignment="Center" Grid.Row="1" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+    </Grid>
+</Window>
