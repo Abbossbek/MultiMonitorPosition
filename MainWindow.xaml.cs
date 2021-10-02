@@ -39,8 +39,8 @@ namespace MultiMonitorPosition
                 var screen = new ScreenModel()
                 {
                     Name = item.DeviceName,
-                    Height = item.WorkingArea.Height,
-                    Width = item.WorkingArea.Width,
+                    Height = item.Bounds.Height,
+                    Width = item.Bounds.Width,
                     X = item.WorkingArea.X,
                     Y = item.WorkingArea.Y,
                     IsPrimary = item.Primary
@@ -65,7 +65,7 @@ namespace MultiMonitorPosition
         {
             for(int i=0;i<screens.Count();i++)
             {
-                var processInfo = new ProcessStartInfo("DPEdit.exe", $"{i + 1} {screens[i].X} {screens[i].Y}");
+                var processInfo = new ProcessStartInfo("DPEdit.exe", $"{screens[i].Name.Last()} {screens[i].X} {screens[i].Y}");
                 processInfo.CreateNoWindow = true;
                 Process.Start(processInfo);
             }
