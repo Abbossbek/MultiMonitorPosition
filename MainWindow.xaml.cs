@@ -23,6 +23,8 @@ namespace MultiMonitorPosition
     /// </summary>
     public partial class MainWindow : Window
     {
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern bool SetProcessDPIAware();
         List<ScreenModel> screens = new List<ScreenModel>();
         public MainWindow()
         {
@@ -34,6 +36,7 @@ namespace MultiMonitorPosition
             mainCanvas.Children.Clear();
             screens.Clear();
             spMain.DataContext = new ScreenModel();
+            if (Environment.OSVersion.Version.Major >= 6) SetProcessDPIAware();
             foreach (var item in Forms.Screen.AllScreens)
             {
                 var screen = new ScreenModel()
