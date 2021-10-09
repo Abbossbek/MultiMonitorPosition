@@ -15,6 +15,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using MaterialDesignThemes.Wpf;
+using MultiMonitorPosition.Pages;
 
 namespace MultiMonitorPosition
 {
@@ -25,7 +27,6 @@ namespace MultiMonitorPosition
     {
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool SetProcessDPIAware();
-        List<ScreenModel> screens = new List<ScreenModel>();
         public MainWindow()
         {
             InitializeComponent();
@@ -33,30 +34,37 @@ namespace MultiMonitorPosition
         }
         void Refresh()
         {
-            mainCanvas.Children.Clear();
-            screens.Clear();
-            spMain.DataContext = new ScreenModel();
             if (Environment.OSVersion.Version.Major >= 6) SetProcessDPIAware();
+            //spMain.DataContext = new ScreenModel();
             foreach (var item in Forms.Screen.AllScreens)
             {
-                var screen = new ScreenModel()
+                var screenView = mainCanvas.Children.Cast<ScreenView>().FirstOrDefault(x => ((ScreenModel)x.DataContext)?.Name == item.DeviceName);
+                ScreenModel screen = (ScreenModel)screenView?.DataContext;
+                if (screen is null)
                 {
-                    Name = item.DeviceName,
-                    Height = item.Bounds.Height,
-                    Width = item.Bounds.Width,
-                    X = item.WorkingArea.X,
-                    Y = item.WorkingArea.Y,
-                    IsPrimary = item.Primary
-                };
-                screens.Add(screen);
-                var screenView = new ScreenView() { DataContext = screens.Last() };
-                screenView.PreviewMouseLeftButtonDown += (s, e) =>
+                    screen = new ScreenModel()
+                    {
+                        Name = item.DeviceName,
+                        Height = item.Bounds.Height,
+                        Width = item.Bounds.Width,
+                        X = item.WorkingArea.X,
+                        Y = item.WorkingArea.Y,
+                        IsPrimary = item.Primary
+                    };
+                    screenView = new ScreenView() { DataContext = screen };
+                    screenView.PreviewMouseLeftButtonDown += (s, e) =>
+                    {
+                        spMain.DataContext = ((ScreenView)s).DataContext;
+                    };
+                    mainCanvas.Children.Add(screenView);
+                    Canvas.SetLeft(screenView, screen.X);
+                    Canvas.SetTop(screenView, screen.Y);
+                }
+                else
                 {
-                    spMain.DataContext = ((ScreenView)s).DataContext;
-                };
-                mainCanvas.Children.Add(screenView);
-                Canvas.SetLeft(screenView, screen.X);
-                Canvas.SetTop(screenView, screen.Y);
+                    Canvas.SetLeft(screenView, item.WorkingArea.X);
+                    Canvas.SetTop(screenView, item.WorkingArea.Y);
+                }
             }
         }
         private void btnClose_Click(object sender, RoutedEventArgs e)
@@ -66,9 +74,9 @@ namespace MultiMonitorPosition
 
         private async void btnApply_Click(object sender, RoutedEventArgs e)
         {
-            for(int i=0;i<screens.Count();i++)
+            foreach (var screen in mainCanvas.Children.Cast<ScreenView>().Select(x => (ScreenModel)x.DataContext))
             {
-                var processInfo = new ProcessStartInfo("DPEdit.exe", $"{screens[i].Name.Last()} {screens[i].X} {screens[i].Y}");
+                var processInfo = new ProcessStartInfo("DPEdit.exe", $"{screen.Name.Last()} {screen.X} {screen.Y}");
                 processInfo.CreateNoWindow = true;
                 Process.Start(processInfo);
             }
@@ -80,6 +88,33 @@ namespace MultiMonitorPosition
         {
             Regex regex = new Regex("[^0-9.-]");
             e.Handled = regex.IsMatch(e.Text);
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            dialogHostFrame.NavigationService.RemoveBackEntry();
+            dialogHostFrame.NavigationService.Navigate(new SavePositionsPage(mainCanvas.Children.Cast<ScreenView>().Select(x => (ScreenModel)x.DataContext).ToList()));
+            dialogHost.IsOpen = true;
+        }
+
+        private async void btnLoad_Click(object sender, RoutedEventArgs e)
+        {
+            dialogHostFrame.NavigationService.RemoveBackEntry();
+            var loadPage = new LoadPositionsPage();
+            dialogHostFrame.NavigationService.Navigate(loadPage);
+            await DialogHost.Show(dialogHostFrame, new DialogClosingEventHandler((sender, args) =>
+            {
+                if (loadPage.Screens is not null)
+                    foreach (var item in loadPage.Screens)
+                    {
+                        var screenView = mainCanvas.Children.Cast<ScreenView>().FirstOrDefault(x => ((ScreenModel)x.DataContext)?.Name == item.Name);
+                        if (screenView is not null)
+                        {
+                            Canvas.SetLeft(screenView, item.X);
+                            Canvas.SetTop(screenView, item.Y);
+                        }
+                    }
+            }));
         }
     }
 }

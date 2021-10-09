@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MultiMonitorPosition"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
@@ -35,7 +36,20 @@
                     Value="50" />
         </Style>
     </Window.Resources>
-    <Grid>
+    <materialDesign:DialogHost x:Name="dialogHost"
+                               OverlayBackground="#A3000000">
+        <materialDesign:DialogHost.Resources>
+            <Style TargetType="materialDesign:Card">
+                <Setter Property="Background"
+                        Value="Transparent" />
+            </Style>
+        </materialDesign:DialogHost.Resources>
+        <materialDesign:DialogHost.DialogContent>
+            <Frame Name="dialogHostFrame"
+                   Background="Transparent"
+                   NavigationUIVisibility="Hidden" />
+        </materialDesign:DialogHost.DialogContent>
+        <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="200" />
@@ -79,6 +93,12 @@
             <Button x:Name="btnApply"
                     Content="Apply"
                     Click="btnApply_Click" />
+            <Button x:Name="btnSave"
+                    Content="Save"
+                    Click="btnSave_Click" />
+            <Button x:Name="btnLoad"
+                    Content="Load"
+                    Click="btnLoad_Click" />
             <Button x:Name="btnClose"
                     Content="Close"
                     Background="Red"
@@ -98,13 +118,14 @@
             </Canvas.RenderTransform>
         </Canvas>
 
-        <!--<Rectangle VerticalAlignment="Stretch"
+        <Rectangle VerticalAlignment="Stretch"
                    HorizontalAlignment="Center"
                    Fill="Gray"
                    Width="1" />
         <Rectangle VerticalAlignment="Center"
                    HorizontalAlignment="Stretch"
                    Fill="Gray"
-                   Height="1" />-->
-    </Grid>
+                   Height="1" />
+        </Grid>
+    </materialDesign:DialogHost>
 </Window>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MultiMonitorPosition
 {
-    class ScreenModel
+    public class ScreenModel
     {
         public string Name { get; set; }
         public int Width { get; set; }
