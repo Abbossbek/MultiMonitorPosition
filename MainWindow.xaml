@@ -52,7 +52,7 @@
         <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="270" />
         </Grid.ColumnDefinitions>
         <StackPanel x:Name="spMain"
                     Grid.Column="1"
@@ -103,7 +103,14 @@
                     Content="Close"
                     Background="Red"
                     Click="btnClose_Click" />
-        </StackPanel>
+                <!--<TextBlock Padding="10"
+                    FontSize="22">
+                    Lighthouse Arts GmbH 
+                    <LineBreak />Revaler Str. 
+                    <LineBreak />99 10245 Berlin
+                </TextBlock>-->
+
+            </StackPanel>
         <Rectangle VerticalAlignment="Stretch"
                    HorizontalAlignment="Left"
                    Grid.Column="1"
