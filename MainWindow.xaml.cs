@@ -30,10 +30,17 @@ namespace MultiMonitorPosition
         public MainWindow()
         {
             InitializeComponent();
+        }
+        public override async void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            await Task.Delay(2000);
             Refresh();
         }
         void Refresh()
         {
+            scroll.ScrollToVerticalOffset(scroll.ScrollableHeight / 2);
+            scroll.ScrollToHorizontalOffset(scroll.ScrollableWidth / 2);
             if (Environment.OSVersion.Version.Major >= 6) SetProcessDPIAware();
             //spMain.DataContext = new ScreenModel();
             foreach (var item in Forms.Screen.AllScreens)
